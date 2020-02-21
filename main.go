@@ -9,9 +9,6 @@ import (
 	"strings"
 )
 
-// TODO: Add tests
-// TODO: End README
-
 func main() {
 	if err := run(os.Args, os.Stdout); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
@@ -24,15 +21,19 @@ func main() {
 func run(args []string, stdout io.Writer) error {
 	filename := ".gitignore"
 
-	if checkIfExists(filename) {
-		return fmt.Errorf("%s", ".gitignore already exists!")
-	}
-
-	if len(args) < 1 {
+	if len(args) == 1 {
 		return fmt.Errorf("not enough arguments received")
 	}
 
-	url := createURL("https://gitignore.io/api/", args[1:])
+	if checkIfExists(filename) {
+		return fmt.Errorf("%s", filename+" already exists!")
+	}
+
+	url, err := createURL("https://gitignore.io/api/", args[1:])
+	if err != nil {
+		return err
+	}
+
 	data, err := fetch(url)
 	if err != nil {
 		return err
@@ -56,10 +57,12 @@ func checkIfExists(filename string) bool {
 	return !os.IsNotExist(err)
 }
 
-func createURL(url string, params []string) string {
-	// The last comma doesn't produce any error
-	// on the request.
-	return url + strings.Join(params, ",")
+func createURL(url string, params []string) (string, error) {
+	if len(params) == 0 {
+		return "", fmt.Errorf("not enough parameters received")
+	}
+
+	return url + strings.Join(params, ","), nil
 }
 
 func fetch(url string) ([]byte, error) {
@@ -82,7 +85,7 @@ func fetch(url string) ([]byte, error) {
 func createFile(filename string) (*os.File, error) {
 	file, err := os.Create(filename)
 	if err != nil {
-		return nil, fmt.Errorf("while creating .gitnore file: %v", err)
+		return nil, fmt.Errorf("while creating %q file: %v", filename, err)
 	}
 
 	return file, nil
