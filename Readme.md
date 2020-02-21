@@ -3,7 +3,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/danielkvist/ignoreit)](https://goreportcard.com/report/github.com/danielkvist/ignoreit)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-ignoreit is a CLI writen in Go to create `.gitignore` files using [gitignore.io](https://gitignore.io).
+ignoreit is a CLI written in Go to create `.gitignore` files using [gitignore.io](https://gitignore.io).
 
 ## Example
 
